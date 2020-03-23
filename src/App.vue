@@ -1,7 +1,8 @@
 <template>
   <div id="app">
-
+  <!-- 路由占位符 -->
     test
+    <router-view></router-view>
   </div>
 </template>
 
