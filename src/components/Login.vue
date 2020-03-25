@@ -74,6 +74,8 @@ export default {
         console.log(res)
         if (res.meta.status !== 200) return this.$message.error('失败了')
         this.$message.success('成功！')
+        window.sessionStorage.setItem('data', res.data.token)
+        this.$router.push('/home')
       })
     }
 
