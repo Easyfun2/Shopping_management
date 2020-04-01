@@ -8,6 +8,13 @@ import axios from 'axios'
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 
+// 一旦调用axios。会优先调用request。
+axios.interceptors.request.use(confi => {
+  // console.log(confi)
+  confi.headers.Authorization = window.sessionStorage.getItem('data')
+  return confi
+})
+
 Vue.config.productionTip = false
 
 // 1. 先new一个vue的实例

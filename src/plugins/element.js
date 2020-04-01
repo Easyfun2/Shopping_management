@@ -10,6 +10,9 @@ import {
   Aside,
   Main,
   Menu,
+  Radio,
+  RadioGroup,
+  RadioButton,
   Submenu,
   MenuItem,
   Breadcrumb,
@@ -31,6 +34,7 @@ import {
   Cascader,
   Alert,
   Tabs,
+  Avatar,
   TabPane
 } from 'element-ui'
 // 需要哪些元素的时候，在此处进行导入
@@ -70,4 +74,9 @@ Vue.use(Cascader)
 Vue.use(Alert)
 Vue.use(Tabs)
 Vue.use(TabPane)
+Vue.use(Avatar)
+Vue.use(Radio)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
+
 // Vue.use（） 注册为全局可用的组件
