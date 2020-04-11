@@ -33,7 +33,6 @@
             router
             :default-active="activePath"
             >
-
             <!-- 一级菜单 -->
           <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
             <!-- 一级菜单的模板区域 -->
@@ -53,11 +52,12 @@
                 <span>{{subItem.authName}}</span>
               </template>
             </el-menu-item>
+
           </el-submenu>
         </el-menu>
       </el-aside>
-      <!-- 右侧内容主体 -->
 
+      <!-- 右侧内容主体 -->
       <el-main>
          <router-view></router-view>
       </el-main>
@@ -187,13 +187,14 @@ export default {
 .el-aside {
     background-color: #333744;
     color: #333;
-    text-align: center;
+    // text-align: center;
     line-height: 200px;
-    margin: 0 auto;
-    box-sizing: border-box;
+    // margin: 0 auto;
+    // box-sizing: border-box;
     .el-menu {
       // box-sizing: border-box;
       border-right: none;
+      margin: 0 auto;
 
     }
   }

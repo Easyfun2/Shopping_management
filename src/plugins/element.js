@@ -35,7 +35,12 @@ import {
   Alert,
   Tabs,
   Avatar,
-  TabPane
+  TabPane,
+  Steps,
+  Step,
+  CheckboxGroup,
+  Checkbox,
+  Upload
 } from 'element-ui'
 // 需要哪些元素的时候，在此处进行导入
 
@@ -78,5 +83,12 @@ Vue.use(Avatar)
 Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(RadioButton)
+Vue.use(Steps)
+Vue.use(Step)
+Vue.use(CheckboxGroup)
+Vue.use(Checkbox)
+Vue.use(Upload)
+// Vue.use(Timeline)
+// Vue.use(TimelineItem)
 
 // Vue.use（） 注册为全局可用的组件
