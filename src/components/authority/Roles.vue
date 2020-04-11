@@ -47,7 +47,7 @@
 
                     <el-tag type="warning"
                      v-for="(item3,i3) in item2.children"
-                      :key="item3.id" closable @close="removeRightById()">
+                      :key="item3.id" closable @close="removeRightById(scope.row,item3.id)">
                     <!-- <el-tag type="warning"> -->
                       {{i3}}
                     {{item3.authName}}
@@ -80,14 +80,40 @@
           <el-table-column
           prop="level"
           label="操作" width="300px">
-          <el-button size="mini" type="danger" icon="el-icon-delect">删除</el-button>
-          <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
-          <el-button size="mini" type="warning" icon="el-icon-setting">分配权限</el-button>
-
+          <template slot-scope="scope">
+            <el-button size="mini" type="danger" icon="el-icon-delect">删除</el-button>
+            <el-button size="mini" type="primary" icon="el-icon-edit">编辑</el-button>
+            <el-button size="mini" type="warning" icon="el-icon-setting" @click="setRight(scope.row)">分配权限</el-button>
+          </template>
         </el-table-column>
       </el-table>
 
     </el-card>
+
+        <el-dialog
+      title="分配权限"
+      :visible.sync="setRightdialogVisible"
+      width="30%"
+      @close="setRightdialogClosed"
+      >
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <!-- 这里是tree组件 -->
+        <el-tree
+          :data="userRightList"
+          show-checkbox
+          :props="treeProps"
+          default-expand-all
+          node-key="id"
+          :default-checked-keys="defTreeKeys"
+          ref="treeRef"
+          >
+        </el-tree>
+
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="allotRights">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -95,7 +121,15 @@
 export default {
   data () {
     return {
-      roleList: []
+      roleList: [],
+      setRightdialogVisible: false,
+      userRightList: [],
+      treeProps: {
+        children: 'children',
+        label: 'authName'
+      },
+      defTreeKeys: [105, 116],
+      roleId: []
     }
   },
   created () {
@@ -111,7 +145,7 @@ export default {
       this.roleList = res.data
       console.log('this.roleList', this.roleList)
     },
-    async removeRightById () {
+    async removeRightById (role, righId) {
       const confirmResult = await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -121,7 +155,59 @@ export default {
       if (confirmResult !== 'confirm') {
         return this.$message.info('取消删除')
       }
-      console.log('确认删除了，，')
+      // console.log('确认删除了，，')
+
+      const { data: res } = await this.$http.delete(`roles/${role.id}/rights/${righId}`)
+      if (res.meta.status !== 200) {
+        return this.$message.error('删除失败！')
+      }
+
+      // 这边是个亮点
+      role.children = res.data
+    },
+    async setRight (role) {
+      this.roleId = role.id
+      const { data: res } = await this.$http.get('rights/tree')
+      if (res.meta.status !== 200) {
+        return this.$$message.error('获取权限树失败')
+      }
+      this.userRightList = res.data
+      // 开始
+      this.getLeafKeys(role, this.defTreeKeys)
+      this.setRightdialogVisible = true
+      console.log(this.userRightList)
+    },
+    // 递归函数
+    // 获取所有三级权限的id
+    getLeafKeys (node, arr) {
+      if (!node.children) {
+        return arr.push(node.id)
+      }
+      node.children.forEach(ele => {
+        this.getLeafKeys(ele, arr)
+      })
+    },
+    setRightdialogClosed () {
+      this.defTreeKeys = []
+    },
+    async allotRights () {
+      const keys = [
+        ...this.$refs.treeRef.getCheckedKeys(),
+        ...this.$refs.treeRef.getHalfCheckedKeys()
+      ]
+      const idStr = keys.join(',')
+      console.log('keys', keys)
+      console.log('idstr', idStr)
+
+      const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`,
+        { rids: idStr })
+
+      if (res.meta.status !== 200) {
+        return this.$message.error('分配失败！！')
+      }
+      this.$message.success('分配成功！！')
+      this.getRolesList()
+      this.setRightdialogVisible = false
     }
   }
 }
