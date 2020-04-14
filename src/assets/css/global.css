@@ -39,3 +39,10 @@ html,body,#app{
   height: 200px;
 }
 
+.el-step{
+  margin: 15px 0;
+  /* font-size: 10px; */
+}
+.el-step__title{
+  font-size: 12px;
+}

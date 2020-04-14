@@ -8,6 +8,8 @@ import Rights from '../components/authority/Rights.vue'
 import Roles from '../components/authority/Roles.vue'
 import Cate from '../components/goods/Cate.vue'
 import Params from '../components/goods/Params.vue'
+import List from '../components/goods/List.vue'
+import Add from '../components/goods/Add.vue'
 
 Vue.use(Router)
 
@@ -48,6 +50,14 @@ const routes = [
       {
         path: '/params',
         component: Params
+      },
+      {
+        path: '/goods',
+        component: List
+      },
+      {
+        path: '/goods/add',
+        component: Add
       }
     ]
   }

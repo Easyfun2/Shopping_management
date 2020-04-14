@@ -8,6 +8,19 @@ import axios from 'axios'
 import TreeTable from 'vue-table-with-tree-grid'
 
 Vue.component('tree-table', TreeTable)
+
+Vue.filter('dataFormat', function (originVal) {
+  const dt = new Date(originVal)
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + 1 + '').padStart(2, '0')
+
+  const hh = (dt.getHours() + 1 + '').padStart(2, '0')
+  const mm = (dt.getMinutes() + 1 + '').padStart(2, '0')
+  const ss = (dt.getSeconds() + 1 + '').padStart(2, '0')
+  return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
+
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 
