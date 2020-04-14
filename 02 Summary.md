@@ -66,3 +66,16 @@ https://www.cnblogs.com/lishanlei/p/9327646.html
 ```
 
 ![image-20200414141611342](C:\Users\neil\AppData\Roaming\Typora\typora-user-images\image-20200414141611342.png)
+
+
+```
+
+关于深拷贝：
+
+// 执行添加的业务逻辑
+// lodash   cloneDeep(obj)
+// eslint-disable-next-line no-undef
+const form = _.cloneDeep(this.addForm)
+form.goods_cat = form.goods_cat.join(',')
+
+```
