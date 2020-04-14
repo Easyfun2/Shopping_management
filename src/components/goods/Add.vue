@@ -52,7 +52,12 @@
           </el-cascader>
         </el-form-item>
       </el-tab-pane>
-      <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+      <el-tab-pane label="商品参数" name="1">商品参数
+        <!-- 渲染表单的Item项 -->
+        <el-form-item label="item.attr_name" v-for="item in mangTableDate"
+        :key="item.attr_id">
+        </el-form-item>
+      </el-tab-pane>
       <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
       <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
       <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
@@ -76,7 +81,7 @@ export default {
         goods_weight: 0,
         goods_number: 0,
         // 商品所属的分类数组
-        goods_cat: {}
+        goods_cat: []
       },
       // 表单的验证规则
       addFormrules: {
@@ -121,7 +126,9 @@ export default {
         label: 'cat_name',
         value: 'cat_id',
         children: 'children'
-      }
+      },
+      // 动态参数列表数据
+      mangTableDate: []
     }
   },
   created () {
@@ -137,7 +144,10 @@ export default {
       this.cateList = res.data
     },
     handleChange () {
-      console.log(this.addForm.goods_cat)
+      console.log('goods_cat', this.addForm.goods_cat)
+      console.log('goods_cat的长度', this.addForm.goods_cat.length)
+      console.log('goods_cat的类型', typeof this.addForm.goods_cat.length)
+
       // this.$message.success(this.addForm.goods_cat)
       if (this.addForm.goods_cat.length !== 3) {
         this.addForm.goods_cat = []
@@ -152,8 +162,35 @@ export default {
       // console.log('即将离开的标签页,', oldActiveName)
       // console.log('去的标签页,', activeName)
     },
-    tabClicked () {
-      console.log(this.stepIndex)
+    async tabClicked () {
+      // console.log(this.stepIndex)
+      if (this.stepIndex === '1') {
+        const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`,
+          {
+            params: { sel: 'many' }
+          })
+        if (res.meta.status !== 200) {
+          return this.$message.error('获取失败！')
+        }
+        this.$message.success('获取成功！！！')
+        console.log('前', res.data)
+
+        res.data.forEach(item => {
+          item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
+        })
+        console.log('后', res.data)
+
+        this.mangTableDate = res.date
+      }
+    }
+  },
+  computed: {
+    // eslint-disable-next-line vue/return-in-computed-property
+    cateId () {
+      if (this.addForm.goods_cat.length === 3) {
+        return this.addForm.goods_cat[2]
+      }
+      return null
     }
   }
 
