@@ -70,14 +70,14 @@
       </el-row>
 
       <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="queryInfo.pagenum"
-      :page-sizes="[5, 10, 20, 50]"
-      :page-size="queryInfo.pagesize"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="total" background>
-    </el-pagination>
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="queryInfo.pagenum"
+        :page-sizes="[5, 10, 20, 50]"
+        :page-size="queryInfo.pagesize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total" background>
+      </el-pagination>
 
   </el-card>
 
@@ -85,14 +85,25 @@
     <el-dialog
       title="开始编辑"
       :visible.sync="editDialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <span>输入：</span>
-      <el-input>输入：</el-input>
-      <span>这是一段信息</span>
+      width="80%"
+      >
+      <el-form :model="editForm" ref="editFormRef"
+      label-position="right" label-width="100px"
+      :rules="editFormRules">
+        <el-form-item label="商品名称" prop="goods_name" >
+          <el-input v-model="editForm.goods_name"></el-input>
+        </el-form-item>
+
+        <el-form-item label="商品价格" prop="goods_price" >
+          <el-input v-model="editForm.goods_price"></el-input>
+        </el-form-item>
+        <el-form-item label="商品数量" prop="goods_number">
+          <el-input v-model="editForm.goods_number"></el-input>
+        </el-form-item>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="editDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
       </span>
     </el-dialog>
 
@@ -111,7 +122,53 @@ export default {
       },
       goodsList: [],
       total: 0,
-      editDialogVisible: false
+      editDialogVisible: false,
+      editForm: {
+        goods_number: '',
+        goods_name: '',
+        goods_price: ''
+      },
+      editFormRules: {
+        goods_name: [
+          {
+            require: true,
+            message: '请输入名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在3到10个字符',
+            trigger: 'blur'
+          }
+        ],
+        goods_price: [
+          {
+            require: true,
+            message: '请输入名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在3到10个字符',
+            trigger: 'blur'
+          }
+        ],
+        goods_number: [
+          {
+            require: true,
+            message: '请输入名称',
+            trigger: 'blur'
+          },
+          {
+            min: 2,
+            max: 10,
+            message: '长度在3到10个字符',
+            trigger: 'blur'
+          }
+        ]
+      }
     }
   },
   created () {
@@ -166,16 +223,49 @@ export default {
       this.$message.success('删除参数成功！')
       this.getGoodsList()
     },
-    editById () {
+    async editById (row) {
       this.editDialogVisible = true
+      const { data: res } = await this.$http.get(`goods/${row.goods_id}`)
+      if (res.meta.status !== 200) {
+        // console.log('res.data', res.data)
+        // console.log('res.meta.status', res.meta.status)
+        return this.$message.error('获取修改数据失败！！')
+      }
+      this.$message.success('获取修改数据成功！！')
+      this.editForm = res.data
+      console.log('this.editForm', this.editForm)
     },
     addGoods () {
       this.$router.push('/goods/add')
+    },
+    handleClose () {},
+    submitForm () {
+      this.$refs.editFormRef.validate(async valid => {
+        // console.log('vaild', valid)
+        // console.log('看一下this', this)
+        if (!valid) {
+          return this.$message.error('获取失败了！！')
+        }
+        const { data: res } = await this.$http.put(`goods/${this.editForm.goods_id}`, {
+          goods_name: this.editForm.goods_name,
+          goods_price: this.editForm.goods_price,
+          goods_number: this.editForm.goods_number,
+          goods_weight: this.editForm.goods_weight
+        })
+
+        if (res.meta.status !== 201) {
+          console.log('res.meta.status', res.meta)
+          console.log('this.editFomr', this.editForm)
+          return this.$message.error('提交表单失败！')
+        }
+        this.$message.success('提交表单成功！！')
+        this.getGoodsList()
+        this.editDialogVisible = false
+      })
     }
   },
   computed: {
     // eslint-disable-next-line vue/return-in-computed-property
-
   }
 }
 </script>

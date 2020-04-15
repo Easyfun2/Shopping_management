@@ -56,7 +56,7 @@
       </el-tab-pane>
       <el-tab-pane label="商品参数" name="1">
         <!-- 渲染表单的Item项 -->
-        <el-form-item :label="item.attr_name" v-for="item in mangTableDate"
+        <el-form-item :label="item.attr_name" v-for="item in mangTableData"
         :key="item.attr_id"
         >
         <!-- 复选框组 -->
@@ -121,7 +121,9 @@ export default {
         goods_number: 0,
         // 商品所属的分类数组
         goods_cat: [],
-        pics: []
+        pics: [],
+        attrs: []
+
       },
       // 表单的验证规则
       addFormrules: {
@@ -168,14 +170,15 @@ export default {
         children: 'children'
       },
       // 动态参数列表数据
-      mangTableDate: [],
+      mangTableData: [],
       onlyTableData: [],
       headerObj: {
         Authorization: window.sessionStorage.getItem('data')
       },
       previewPath: '',
       previewVisible: false,
-      goods_introduce: {}
+      goods_introduce: ''
+
     }
   },
   created () {
@@ -226,8 +229,8 @@ export default {
           item.attr_vals = item.attr_vals.length === 0 ? [] : item.attr_vals.split(' ')
         })
         console.log('后', res.data)
-        this.mangTableDate = res.data
-        console.log('看看mangTableDate', this.mangTableDate)
+        this.mangTableData = res.data
+        console.log('看看mangTableData', this.mangTableData)
       }
       if (this.stepIndex === '2') {
         const { data: res } = await this.$http.get(`categories/${this.cateId}/attributes`,
@@ -270,7 +273,7 @@ export default {
         const form = _.cloneDeep(this.addForm)
         form.goods_cat = form.goods_cat.join(',')
         // 处理动态参数
-        this.manyTableData.forEach(item => {
+        this.mangTableData.forEach(item => {
           const newInfo = {
             attr_id: item.attr_id,
             attr_value: item.attr_vals.join(' ')
