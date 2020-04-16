@@ -12,6 +12,10 @@ import 'quill/dist/quill.core.css' // import styles
 import 'quill/dist/quill.snow.css' // for snow theme
 import 'quill/dist/quill.bubble.css' // for bubble theme
 
+// 导入NProgress
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 Vue.component('tree-table', TreeTable)
 Vue.use(VueQuillEditor)
 
@@ -40,8 +44,14 @@ axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 // 一旦调用axios。会优先调用request。
 axios.interceptors.request.use(confi => {
   // console.log(confi)
+  NProgress.start()
   confi.headers.Authorization = window.sessionStorage.getItem('data')
   return confi
+})
+
+axios.interceptors.response.use(config => {
+  NProgress.done()
+  return config
 })
 
 Vue.config.productionTip = false
