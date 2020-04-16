@@ -27,8 +27,15 @@ Vue.filter('dataFormat', function (originVal) {
   return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
 })
 
+Vue.filter('dataFormat01', function (originVal) {
+  const newDate = new Date()
+  newDate.setTime(originVal * 1000)
+  return newDate.toLocaleString()
+})
+
 Vue.prototype.$http = axios
-axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
+// axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
+axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 
 // 一旦调用axios。会优先调用request。
 axios.interceptors.request.use(confi => {

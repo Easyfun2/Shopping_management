@@ -44,6 +44,8 @@ import {
 } from 'element-ui'
 // 需要哪些元素的时候，在此处进行导入
 
+import Timeline from './timeline/index.js'
+import TimelineItem from './timeline-item/index.js'
 // 注册为全局可用的
 Vue.prototype.$message = Message
 // 在vue原型上挂载MessageBox里面的函数
@@ -88,7 +90,7 @@ Vue.use(Step)
 Vue.use(CheckboxGroup)
 Vue.use(Checkbox)
 Vue.use(Upload)
-// Vue.use(Timeline)
-// Vue.use(TimelineItem)
+Vue.use(Timeline)
+Vue.use(TimelineItem)
 
 // Vue.use（） 注册为全局可用的组件
